@@ -1,10 +1,10 @@
 def label = "mypod-${UUID.randomUUID().toString()}"
-podTemplate(label: devops, yaml: """
+podTemplate(label: label, yaml: """
 apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    name: sample
+    some-label: some-label-value
 spec:
   containers:
   - name: busybox
@@ -14,7 +14,7 @@ spec:
     tty: true
 """
 ) {
-    node (devops) {
+    node (label) {
       container('busybox') {
         sh "hostname"
       }
