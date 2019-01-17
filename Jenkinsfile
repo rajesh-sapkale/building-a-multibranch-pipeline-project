@@ -1,23 +1,22 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:6-alpine'
-            args '-p 3000:3000 -p 5000:5000'
-        }
-    }
-    environment {
-        CI = 'true'
-    }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
-            }
-        }
+def label = "mypod-${UUID.randomUUID().toString()}"
+podTemplate(label: devops, yaml: """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: sample
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+    - cat
+    tty: true
+"""
+) {
+    node (devops) {
+      container('busybox') {
+        sh "hostname"
+      }
     }
 }
